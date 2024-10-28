@@ -85,6 +85,47 @@ _amp_res_2_fastqc_
 После тримминга повысилось качество ридов (Per base sequence quality), поскольку мы обрезали с конца риды, но появилась желтая галочка в Sequence Length Distribution. 
 ![image](https://github.com/user-attachments/assets/3a81d010-d9ae-4f09-b4f5-d2f3fc27fe74)
 
+## Date: 28.10.2024
+
+7. Mapping Calling
+
+- установка `bwa`
+
+`conda install bwa` не получилось
+
+Ошибка: `PackagesNotFoundError: The following packages are not available from current channels: bwa`
+
+`conda install bioconda::bwa` 
+
+Получилось :)
+
+Индексация:
+
+`bwa index ./Map_Call/ref_indexes /home/arina/Practice.IB/Project1/GCF_000005845.2_ASM584v2_genomic.fna.gz`
+
+Картирование:
+
+`bwa mem GCF_000005845.2_ASM584v2_genomic.fna.gz /Users/alinanazarova/all_important/BI/bioinf_prak/Practice1/amp_res_1_paired.fastq.gz /Users/alinanazarova/all_important/BI/bioinf_prak/Practice1/amp_res_2_paired.fastq.gz > alignment.sam`
+
+Посмотрим статистику картирования с использованием флагов из SamTools
+
+`samtools view -@ 1 -c alignment.sam` 
+
+общее число выравниваний: 905500
+
+`samtools view -@ 1 -f 4 -c alignment.sam`
+
+число некартированных ридов: 7659
+
+`samtools view -@ 1 -F 4 -c alignment.sam`
+
+число картированных ридов: 897841
+
+`samtools view -@ 1 -F 4 -c alignment.sam`
+
+число правильно картированных ридов: 889224
+
+
 
 
 
