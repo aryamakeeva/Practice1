@@ -14,7 +14,7 @@ SNP calling
 
 `wget GCF_000005845.2_ASM584v2_genomic.gff.gz`: annotation
 
-2. Скачать fasta- файлы не получилось, поэтому я просто перенесла их в папку вручную
+2. Скачать fasta - файлы не получилось, поэтому я просто перенесла их в папку вручную
 
 3. Изучение структуры fasta-файлов
 
@@ -27,7 +27,7 @@ zcat чтобы не разархивировать файлы, head -20 пок�
 
 `1823504` - аналогичное было и в reverse ридах
 
-Чтобы посчитать количество ридов в файле нужно или количество строк разделить на 4, или ввести команду: `zcat amp_res_1.fastq.gz | wc -l | awk '{print $1/4}'. Количество ридов 455876.
+Чтобы посчитать количество ридов в файле нужно или количество строк разделить на 4, или ввести команду: `zcat amp_res_1.fastq.gz | wc -l | awk '{print $1/4}`. Количество ридов 455876.
 
 Теперь смотрим вывод команды `zcat amp_res_1.fastq.gz | seqkit stats`
 ![image](https://github.com/user-attachments/assets/c53f17a1-07a1-4935-85ce-20d7a92414fb)
@@ -43,19 +43,23 @@ zcat чтобы не разархивировать файлы, head -20 пок�
 
 5. Изучение FastQC Report
 
-[amp_res_1_fastqc](file://wsl.localhost/Ubuntu/home/arina/Practice.IB/Project1/QC_Trimming/amp_res_1_fastqc.html#M0)
+_amp_res_1_fastqc_
+![image](https://github.com/user-attachments/assets/61466195-e42b-4160-a29f-741d608bb91d)
 
-- Per base sequence quality
-- Per tile sequence quality
-- Per base sequence content
-- Per sequence GC content
+Число ридов совпадает с ожидаемым
+- Per base sequence quality: red, качество ридов падает к концу из-за истощения реактивов
+  ![image](https://github.com/user-attachments/assets/2857ac45-476e-4711-8b3d-46cdf0eb664a)
+- Per tile sequence quality: red, значение качества по регионам проточной ячейки тоже понижено, это может быть связано с появлением пузырьков воздуха (каких-то небольших дефектов ячейки)
+![image](https://github.com/user-attachments/assets/dc0ac75f-5d86-44fe-9eb4-e5594b0c3602)
+- Per base sequence content: yellow
+- Per sequence GC content: yellow
   
-[amp_res_2_fastqc](file://wsl.localhost/Ubuntu/home/arina/Practice.IB/Project1/QC_Trimming/amp_res_2_fastqc.html#M0)
+_amp_res_2_fastqc_
 
-- Per base sequence quality
-- Per tile sequence quality
-- Per base sequence content
-- Per sequence GC content
+- Per base sequence quality: red
+- Per tile sequence quality: yellow
+- Per base sequence content: yellow
+- Per sequence GC content: yellow
 
 
 
