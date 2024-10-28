@@ -43,6 +43,20 @@ zcat чтобы не разархивировать файлы, head -20 пок�
 
 5. Изучение FastQC Report
 
+[amp_res_1_fastqc](file://wsl.localhost/Ubuntu/home/arina/Practice.IB/Project1/QC_Trimming/amp_res_1_fastqc.html#M0)
+
+- Per base sequence quality
+- Per tile sequence quality
+- Per base sequence content
+- Per sequence GC content
+  
+[amp_res_2_fastqc](file://wsl.localhost/Ubuntu/home/arina/Practice.IB/Project1/QC_Trimming/amp_res_2_fastqc.html#M0)
+
+- Per base sequence quality
+- Per tile sequence quality
+- Per base sequence content
+- Per sequence GC content
+
 
 
 
