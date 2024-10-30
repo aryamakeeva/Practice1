@@ -8,15 +8,15 @@ SNP calling
   `sudo apt install trimmomatic`
 
 ## Date: 26.10.2024
-1. Скачивание данных из NCBI
+### 1. Скачивание данных из NCBI
 
 `wget GCF_000005845.2_ASM584v2_genomic.fna.gz`: seqence 
 
 `wget GCF_000005845.2_ASM584v2_genomic.gff.gz`: annotation
 
-2. Скачать fasta - файлы не получилось, поэтому я просто перенесла их в папку вручную
+### 2. Скачать fasta - файлы не получилось, поэтому я просто перенесла их в папку вручную
 
-3. Изучение структуры fasta-файлов
+### 3. Изучение структуры fasta-файлов
 
 `zcat amp_res_1.fastq.gz | head -20`
 
@@ -36,7 +36,7 @@ SNP calling
 Теперь смотрим вывод команды `zcat amp_res_1.fastq.gz | seqkit stats`
 ![image](https://github.com/user-attachments/assets/c53f17a1-07a1-4935-85ce-20d7a92414fb)
 
-4. Фильтрация ридов
+### 4. Фильтрация ридов
 
 `mamba install -c bioconda fastqc` установила fastqc
 
@@ -45,7 +45,7 @@ SNP calling
 Запустила программу для анализа качества ридов, флаг `-t` указывает количество потоков, `-o` местоположение куда сохранить получившиеся файлы
 `fastqc -t 1 -o ./QC_Trimming /amp_res_1.fastq.gz /amp_res_2.fastq.gz` 
 
-5. Изучение FastQC Report
+### 5. Изучение FastQC Report
 
 _amp_res_1_fastqc_
 ![image](https://github.com/user-attachments/assets/61466195-e42b-4160-a29f-741d608bb91d)
@@ -65,7 +65,7 @@ _amp_res_2_fastqc_
 - Per base sequence content: yellow
 - Per sequence GC content: yellow
 
-6. Тримминг последовательности
+### 6. Тримминг последовательности
 
 `mamba install -c bioconda trimmomatic` 
 
@@ -87,9 +87,9 @@ _amp_res_2_fastqc_
 
 ## Date: 28.10.2024
 
-7. Mapping Calling
+### 7. Mapping Calling
 
-- установка `bwa`
+- Установка `bwa`
 
 `conda install bwa` не получилось
 
@@ -99,15 +99,19 @@ _amp_res_2_fastqc_
 
 Получилось :)
 
-Индексация:
+- Индексация:
 
 `bwa index ./Map_Call/ref_indexes /home/arina/Practice.IB/Project1/GCF_000005845.2_ASM584v2_genomic.fna.gz`
 
-Картирование:
+- Картирование:
 
 `bwa mem GCF_000005845.2_ASM584v2_genomic.fna.gz /Users/alinanazarova/all_important/BI/bioinf_prak/Practice1/amp_res_1_paired.fastq.gz /Users/alinanazarova/all_important/BI/bioinf_prak/Practice1/amp_res_2_paired.fastq.gz > alignment.sam`
 
-Посмотрим статистику картирования с использованием флагов из SamTools
+Конвертация файла в bam-формат: 
+
+`samtools view -S -b alignment.sam > alignment.bam`
+
+- Посмотрим статистику картирования с использованием флагов из SamTools:
 
 `samtools view -@ 1 -c alignment.sam` 
 
@@ -124,6 +128,21 @@ _amp_res_2_fastqc_
 `samtools view -@ 1 -F 4 -c alignment.sam`
 
 число правильно картированных ридов: 889224
+
+- Сортировка и индексация .bam: команды из практикума сработали без дополнительных изменения
+
+`samtools sort alignment.bam alignment_sorted`
+
+`samtools index alignment_sorted.bam`
+
+- Визуализация в IGV-браузере:
+
+Чтобы посмотреть результаты картирования и коллинга в IGV сначала загрузили индексированный референсный геном на который мы
+картировали свои данные (представленные в браузере нам не подходили). После загрузки референса загрузить сортированные по координатам и индексированные bam файлы (.bam и bam.bai)
+
+![image](https://github.com/user-attachments/assets/745f9875-058c-441d-a5fb-d1cc8f409bd7)
+
+## Date: 29.10.2024
 
 
 
