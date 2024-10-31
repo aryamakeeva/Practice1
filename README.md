@@ -144,12 +144,33 @@ _amp_res_2_fastqc_
 
 ## Date: 29.10.2024
 
+- Далее провели поиск мутаций с помощью VarScan(varianr scaning), но для запуска его работы необходимо подготовить промежуточный файл **mpileup** который считает количество несовпадений с рефересной молекулой. Для создания такого файла воспользовались командой
 
+`samtools mpileup -f GCF_000005845.2_ASM584v2_genomic.fna alignment_sorted.bam >  my.mpileup`
 
+- Затем потербовалась установка **VarScan**, для этого нужно скачать файл **VarScan.v2.3.9.jar** с официального сайта или гитхаба разработчика и положить его в директорию где будет проходить обработка данных. Для поиска истинных мутаций запустили фильтр прочтений с следующими настройками:
 
+`java -jar VarScan.v2.3.9.jar  mpileup2snp my.mpileup --min-var-freq 0.20 --variants --output-vcf 1 > VarScan_results.vcf`
+  
+где уровень **--min-var-freq** был выбран 0.2, это означает, что положения в которых отличия от референса ниже 20% отфильтровываются.
 
+#### Результаты визуализации вариантов в IGV
 
+<img width="1416" alt="Снимок экрана 2024-10-30 в 22 27 30" src="https://github.com/user-attachments/assets/a017d0c1-44ab-41b3-82ef-bdcc75803069"> 
 
+- Таким образом получили 6 мутаций в бактериальном геноме _E.coli k_12_ для того чтобы понять влияние этих мутаций провели автоматическую SNP аннотацию с помощью **SnpEff**
 
+- Установка SnpEff:
 
+conda install bioconda::snpeff
+
+- Запуск аннотации
+
+1. Добавить в начало snpEff.config файла, который лежит в директории вместе с файлом snpEff.jar, строчку **k12.genome : ecoli_K12**
+2. Вернуться в основную рабочую директорию, создать папку data, а в ней подпапку k12
+3. Добавить в k12 файл с аннотацией с расширением dbff.gz разархивировать файл и переименовать в genes.gbk
+4. Создать базу данных командой `snpEff build -dataDir /Users/alinanazarova/all_important/BI/bioinf_prak/Practice1/data/ -noCheckCds -genbank -v k12`
+5. Провести аннотацию `snpEff ann -dataDir /Users/alinanazarova/all_important/BI/bioinf_prak/Practice1/data k12 VarScan_results.vcf > VarScan_results_annotated.vcf`
+
+Аннотированные данные можно просмотреть в IGV подгрузив в качестве файла получившийся **VarScan_results_annotated.vcf**
 
