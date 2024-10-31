@@ -162,7 +162,7 @@ _amp_res_2_fastqc_
 
 - Установка SnpEff:
 
-conda install bioconda::snpeff
+`conda install bioconda::snpeff`
 
 - Запуск аннотации
 
