@@ -87,6 +87,8 @@ _amp_res_2_fastqc_
 После тримминга повысилось качество ридов (Per base sequence quality), поскольку мы обрезали с конца риды, но появилась желтая галочка в Sequence Length Distribution. 
 ![image](https://github.com/user-attachments/assets/3a81d010-d9ae-4f09-b4f5-d2f3fc27fe74)
 
+При повышении жесткости фильтрации (PHRED > 30) количество ридов сильно уменьшится. 
+
 ## Date: 28.10.2024
 
 ### 7. Mapping Calling
