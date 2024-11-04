@@ -153,7 +153,13 @@ rname - хромосома референса, star/endpos - стартовая/
 
 ## Date: 29.10.2024
 
-- Далее провели поиск мутаций с помощью VarScan(varianr scaning), но для запуска его работы необходимо подготовить промежуточный файл **mpileup** который считает количество несовпадений с рефересной молекулой. Для создания такого файла воспользовались командой
+### Variant calling
+
+- Далее провели поиск мутаций с помощью VarScan(varianr scaning), но для запуска его работы необходимо подготовить промежуточный файл **mpileup** который считает количество несовпадений с рефересной молекулой.
+
+разархивировали файл `genomic.fna.gz` с помощью команды `gunzip`
+
+Провели расчет покрытия прочтениями каждой позиции рефернса. Флаг `-f` fasta с последовательностью референсного генома:
 
 `samtools mpileup -f GCF_000005845.2_ASM584v2_genomic.fna alignment_sorted.bam >  my.mpileup`
 
@@ -182,4 +188,60 @@ rname - хромосома референса, star/endpos - стартовая/
 5. Провести аннотацию `snpEff ann -dataDir /Users/alinanazarova/all_important/BI/bioinf_prak/Practice1/data k12 VarScan_results.vcf > VarScan_results_annotated.vcf`
 
 Аннотированные данные можно просмотреть в IGV подгрузив в качестве файла получившийся **VarScan_results_annotated.vcf**
+
+## Date 03.11,2024
+
+Альтернативный способ коллинга с помощью BCF-tools:
+
+Установка: 
+
+`conda install bioconda::bcftools`
+
+`bcftools call -mv --ploidy 1 -Ob -o ./Map_Call/calls.bcf my.mpileup`
+
+Флаг `--poidy 1` указывает, что наш организм гаплоидный, `-mv` использовать улучшенный алгоритм поиска вариантов, дать на выходе программы только сайты вариантов, `Ob` выдать результаты в бинарном формате BCF
+
+Изучим вывод структуру файла:
+
+`bcftools view -h calls.bcf`
+
+`bcftools view -H calls.bcf | head -n 5`
+
+![image](https://github.com/user-attachments/assets/b2690c84-c6e4-4097-a190-42d8867b44cd)
+
+Теперь отфильтруем полиморфизмы, потому что некоторые мутации, которые мы видим потенциально могут быть ложно-положительными. Например, SNP на концах чтений или возле инделей потенциально - ошибки секвенирования/картирования. Или низкая глубина покрытия (мы считаем, что глубина покрытия >20 нас устраивает. Или отсутствие информации о мутации в базах данных - тоже ошибка (если речь идёт о модельных организмах).
+
+`bcftools filter -e 'DP < 20 || QUAL < 20 || MQ < 20' -Ob calls.bcf > filtered_calls.bcf`
+
+Альтернативный способ коллинга с помощью FreeBayers:
+
+`conda install freebayes`
+
+`freebayes -f GCF_000005845.2_ASM584v2_genomic.fna -p 2 -m 20 -q 20 ./Map_Call/alignment_sorted.bam >  ./Map_Call/free_calls.vcf`
+
+`p` - плоидность, `-m` - min mapping quality Q, `-q` min base quality Q
+
+дополнительно отфильтруем:
+
+`bcftools filter -e 'INFO/DP > 20 || QUAL > 20' -Ob free_calls.vcf > filtered_free_calls.bcf`
+
+Теперь проиндексируем 
+
+`bcftools index filtered_free_calls.bcf & bcftools index filtered_calls.bcf`
+
+Посчитаем статистику по всем полиморфизмам:
+
+`bcftools stats filtered_free_calls.bcf > filtered_free_stats.txt`
+
+`bcftools stats filtered_calls.bcf > filtered_calls_stats.txt`
+
+Теперь оставим только SNP
+
+`bcftools view -v snps -Ob filtered_calls.bcf > filtered_calls_snp.bcf`
+
+`bcftools view -v snps -Ob filtered_free_calls.bcf > filtered_free_calls_snp.bcf`
+
+
+
+
 
