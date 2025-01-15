@@ -1,5 +1,5 @@
 # Practice
-SNP calling 
+SNP detection in Escherichia coli resistant to ampicillin
 ## Date: 25.10.2024
 1. Создание виртуальной среды для работы
    `conda create --name project1env python=3.13`
